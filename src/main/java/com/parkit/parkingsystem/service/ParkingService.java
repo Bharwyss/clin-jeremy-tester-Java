@@ -33,7 +33,7 @@ public class ParkingService {
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehicleRegNumber();
                 // Check if this vehicle already had a ticket
-                if (ticketDAO.getNbTicket(vehicleRegNumber) > 1)
+                if (ticketDAO.getNbTicket(vehicleRegNumber) > 0)
                 {
                     System.out.println("Welcome back. For using our service more than once, you'll get a 5% discount.");
                 }

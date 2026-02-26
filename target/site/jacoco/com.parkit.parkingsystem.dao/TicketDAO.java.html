@@ -20,65 +20,76 @@ import java.sql.*;
     public boolean saveTicket(Ticket ticket) throws SQLException, ClassNotFoundException {
 <span class="nc" id="L21">        try (Connection con = dataBaseConfig.getConnection();</span>
 <span class="nc" id="L22">             PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET)) {</span>
-<span class="nc" id="L23">            ps.setInt(1, ticket.getParkingSpot().getId());</span>
-<span class="nc" id="L24">            ps.setString(2, ticket.getVehicleRegNumber());</span>
-<span class="nc" id="L25">            ps.setDouble(3, ticket.getPrice());</span>
-<span class="nc" id="L26">            ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));</span>
-<span class="nc bnc" id="L27" title="All 2 branches missed.">            ps.setTimestamp(5, ticket.getOutTime() == null ? null :</span>
-<span class="nc" id="L28">                    new Timestamp(ticket.getOutTime().getTime()));</span>
 
-<span class="nc bnc" id="L30" title="All 2 branches missed.">            return ps.executeUpdate() == 1; //if one line got affected, return true, if not, return false</span>
+<span class="nc" id="L24">            ps.setInt(1, ticket.getParkingSpot().getId());</span>
+<span class="nc" id="L25">            ps.setString(2, ticket.getVehicleRegNumber());</span>
+<span class="nc" id="L26">            ps.setDouble(3, ticket.getPrice());</span>
+<span class="nc" id="L27">            ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">            ps.setTimestamp(5, ticket.getOutTime() == null ? null :</span>
+<span class="nc" id="L29">                    new Timestamp(ticket.getOutTime().getTime()));</span>
+
+<span class="nc bnc" id="L31" title="All 2 branches missed.">            return ps.executeUpdate() == 1; //if one line got affected, return true, if not, return false</span>
+<span class="nc" id="L32">        } catch (Exception e) {</span>
+<span class="nc" id="L33">            logger.error(&quot;Error saving ticket&quot;, e);</span>
+<span class="nc" id="L34">            throw new RuntimeException(e);</span>
         }
     }
 
     public Ticket getTicket(String vehicleRegNumber) throws SQLException, ClassNotFoundException {
-<span class="nc" id="L35">        try (Connection con = dataBaseConfig.getConnection();</span>
-<span class="nc" id="L36">             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET)) {</span>
-<span class="nc" id="L37">            ps.setString(1, vehicleRegNumber);</span>
+<span class="nc" id="L39">        try (Connection con = dataBaseConfig.getConnection();</span>
+<span class="nc" id="L40">             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET)) {</span>
+<span class="nc" id="L41">            ps.setString(1, vehicleRegNumber);</span>
 
-<span class="nc" id="L39">            try (ResultSet rs = ps.executeQuery()) {</span>
-
-<span class="nc bnc" id="L41" title="All 2 branches missed.">                if (rs.next()) {</span>
-<span class="nc" id="L42">                    Ticket ticket = new Ticket();</span>
-<span class="nc" id="L43">                    ParkingSpot parkingSpot =</span>
-<span class="nc" id="L44">                            new ParkingSpot(rs.getInt(1),</span>
-<span class="nc" id="L45">                                    ParkingType.valueOf(rs.getString(6)),</span>
+<span class="nc" id="L43">            try (ResultSet rs = ps.executeQuery()) {</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">                if (rs.next()) {</span>
+<span class="nc" id="L45">                    Ticket ticket = new Ticket();</span>
+<span class="nc" id="L46">                    ParkingSpot parkingSpot =</span>
+<span class="nc" id="L47">                            new ParkingSpot(rs.getInt(1),</span>
+<span class="nc" id="L48">                                    ParkingType.valueOf(rs.getString(6)),</span>
                                     false);
-<span class="nc" id="L47">                    ticket.setParkingSpot(parkingSpot);</span>
-<span class="nc" id="L48">                    ticket.setId(rs.getInt(2));</span>
-<span class="nc" id="L49">                    ticket.setVehicleRegNumber(vehicleRegNumber);</span>
-<span class="nc" id="L50">                    ticket.setPrice(rs.getDouble(3));</span>
-<span class="nc" id="L51">                    ticket.setInTime(rs.getTimestamp(4));</span>
-<span class="nc" id="L52">                    ticket.setOutTime(rs.getTimestamp(5));</span>
-<span class="nc" id="L53">                    return ticket;</span>
+<span class="nc" id="L50">                    ticket.setParkingSpot(parkingSpot);</span>
+<span class="nc" id="L51">                    ticket.setId(rs.getInt(2));</span>
+<span class="nc" id="L52">                    ticket.setVehicleRegNumber(vehicleRegNumber);</span>
+<span class="nc" id="L53">                    ticket.setPrice(rs.getDouble(3));</span>
+<span class="nc" id="L54">                    ticket.setInTime(rs.getTimestamp(4));</span>
+<span class="nc" id="L55">                    ticket.setOutTime(rs.getTimestamp(5));</span>
+<span class="nc" id="L56">                    return ticket;</span>
                 }
-<span class="nc bnc" id="L55" title="All 2 branches missed.">            }</span>
-<span class="nc bnc" id="L56" title="All 4 branches missed.">        }</span>
-<span class="nc" id="L57">        return null;</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">            }</span>
+<span class="nc bnc" id="L59" title="All 4 branches missed.">        } catch (Exception e) {</span>
+<span class="nc" id="L60">            logger.error(&quot;Error getting a ticket for vehicle {}&quot;, vehicleRegNumber, e);</span>
+<span class="nc" id="L61">            throw new RuntimeException(e);</span>
+<span class="nc" id="L62">        }</span>
+<span class="nc" id="L63">        return null;</span>
     }
 
     public boolean updateTicket(Ticket ticket) throws SQLException, ClassNotFoundException {
-<span class="nc" id="L61">        try (Connection con = dataBaseConfig.getConnection();</span>
-<span class="nc" id="L62">             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET)) {</span>
-<span class="nc" id="L63">            ps.setDouble(1, ticket.getPrice());</span>
-<span class="nc" id="L64">            ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));</span>
-<span class="nc" id="L65">            ps.setInt(3, ticket.getId());</span>
+<span class="nc" id="L67">        try (Connection con = dataBaseConfig.getConnection();</span>
+<span class="nc" id="L68">             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET)) {</span>
 
-<span class="nc bnc" id="L67" title="All 2 branches missed.">            return ps.executeUpdate() == 1;</span>
+<span class="nc" id="L70">            ps.setDouble(1, ticket.getPrice());</span>
+<span class="nc" id="L71">            ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));</span>
+<span class="nc" id="L72">            ps.setInt(3, ticket.getId());</span>
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            return ps.executeUpdate() == 1;</span>
+<span class="nc" id="L75">        } catch (Exception e) {</span>
+<span class="nc" id="L76">            logger.error(&quot;Error updating ticket&quot;, e);</span>
+<span class="nc" id="L77">            throw new RuntimeException(e);</span>
         }
     }
 
     public int getNbTicket(String vehicleRegNumber) {
-<span class="nc" id="L72">        try (Connection con = dataBaseConfig.getConnection();</span>
-<span class="nc" id="L73">             PreparedStatement ps = con.prepareStatement(DBConstants.GET_NB_TICKET)) {</span>
-<span class="nc" id="L74">            ps.setString(1, vehicleRegNumber);</span>
+<span class="nc" id="L82">        try (Connection con = dataBaseConfig.getConnection();</span>
+<span class="nc" id="L83">             PreparedStatement ps = con.prepareStatement(DBConstants.GET_NB_TICKET)) {</span>
 
-<span class="nc" id="L76">            try (ResultSet rs = ps.executeQuery()) {</span>
-<span class="nc bnc" id="L77" title="All 2 branches missed.">                return rs.next() ? rs.getInt(1) : 0;</span>
+<span class="nc" id="L85">            ps.setString(1, vehicleRegNumber);</span>
+
+<span class="nc" id="L87">            try (ResultSet rs = ps.executeQuery()) {</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                return rs.next() ? rs.getInt(1) : 0;</span>
             }
-<span class="nc" id="L79">        } catch (Exception e) {</span>
-<span class="nc" id="L80">            logger.error(&quot;Error counting tickets for vehicle {}&quot;, vehicleRegNumber, e);</span>
-<span class="nc" id="L81">            throw new RuntimeException(e);</span>
+<span class="nc" id="L90">        } catch (Exception e) {</span>
+<span class="nc" id="L91">            logger.error(&quot;Error counting tickets for vehicle {}&quot;, vehicleRegNumber, e);</span>
+<span class="nc" id="L92">            throw new RuntimeException(e);</span>
         }
     }
 }

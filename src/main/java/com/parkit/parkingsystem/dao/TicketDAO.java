@@ -17,7 +17,7 @@ public class TicketDAO {
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
     // Using a try with resource to close automatically resources
-    public boolean saveTicket(Ticket ticket) throws SQLException, ClassNotFoundException {
+    public boolean saveTicket(Ticket ticket) {
         try (Connection con = dataBaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET)) {
 
@@ -35,7 +35,7 @@ public class TicketDAO {
         }
     }
 
-    public Ticket getTicket(String vehicleRegNumber) throws SQLException, ClassNotFoundException {
+    public Ticket getTicket(String vehicleRegNumber) {
         try (Connection con = dataBaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET)) {
             ps.setString(1, vehicleRegNumber);
@@ -64,10 +64,15 @@ public class TicketDAO {
     }
 
     public boolean updateTicket(Ticket ticket) throws SQLException, ClassNotFoundException {
+        if (ticket.getOutTime() == null) {
+            throw new IllegalArgumentException("outTime cannot be null");
+        }
+
         try (Connection con = dataBaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET)) {
 
             ps.setDouble(1, ticket.getPrice());
+            if (ticket.getOutTime() == null) throw new IllegalArgumentException("outTime cannot be null");
             ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
             ps.setInt(3, ticket.getId());
 

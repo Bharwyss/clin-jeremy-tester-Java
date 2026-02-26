@@ -28,28 +28,25 @@ import java.sql.ResultSet;
 <span class="nc" id="L28">                    return rs.getInt(1);</span>
                 }
 <span class="nc bnc" id="L30" title="All 2 branches missed.">            }</span>
-
-<span class="nc" id="L32">            return -1; // no available slot</span>
-
-<span class="nc bnc" id="L34" title="All 4 branches missed.">        } catch (Exception ex) {</span>
-<span class="nc" id="L35">            logger.error(&quot;Error fetching next available slot&quot;, ex);</span>
-<span class="nc" id="L36">            throw new RuntimeException(ex); // technical error</span>
+<span class="nc" id="L31">            return -1; // no available slot</span>
+<span class="nc bnc" id="L32" title="All 4 branches missed.">        } catch (Exception ex) {</span>
+<span class="nc" id="L33">            logger.error(&quot;Error fetching next available slot&quot;, ex);</span>
+<span class="nc" id="L34">            throw new RuntimeException(ex); // technical error</span>
         }
     }
 
     public boolean updateParking(ParkingSpot parkingSpot) {
-        //update the availability for that parking slot
-<span class="nc" id="L42">        try (Connection con = dataBaseConfig.getConnection();</span>
-<span class="nc" id="L43">             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);) {</span>
+<span class="nc" id="L39">        try (Connection con = dataBaseConfig.getConnection();</span>
+<span class="nc" id="L40">             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);) {</span>
 
-<span class="nc" id="L45">            ps.setBoolean(1, parkingSpot.isAvailable());</span>
-<span class="nc" id="L46">            ps.setInt(2, parkingSpot.getId());</span>
-<span class="nc" id="L47">            int updateRowCount = ps.executeUpdate();</span>
-<span class="nc bnc" id="L48" title="All 2 branches missed.">            return (updateRowCount == 1);</span>
+<span class="nc" id="L42">            ps.setBoolean(1, parkingSpot.isAvailable());</span>
+<span class="nc" id="L43">            ps.setInt(2, parkingSpot.getId());</span>
 
-<span class="nc" id="L50">        } catch (Exception ex) {</span>
-<span class="nc" id="L51">            logger.error(&quot;Error updating parking info&quot;, ex);</span>
-<span class="nc" id="L52">            throw new RuntimeException(ex); // technical error</span>
+<span class="nc" id="L45">            int updateRowCount = ps.executeUpdate();</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">            return (updateRowCount == 1);</span>
+<span class="nc" id="L47">        } catch (Exception ex) {</span>
+<span class="nc" id="L48">            logger.error(&quot;Error updating parking info&quot;, ex);</span>
+<span class="nc" id="L49">            throw new RuntimeException(ex); // technical error</span>
         }
     }
 }

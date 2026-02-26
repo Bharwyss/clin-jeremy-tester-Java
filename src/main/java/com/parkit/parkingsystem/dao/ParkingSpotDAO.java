@@ -23,6 +23,7 @@ public class ParkingSpotDAO {
 
             ps.setString(1, parkingType.toString());
 
+            // Second try because this resource has to execute after the previous ones
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1);
