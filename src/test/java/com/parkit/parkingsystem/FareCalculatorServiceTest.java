@@ -31,7 +31,7 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareCar() {
-        Date inTime = new Date();
+        Date inTime = new Date(); // en une ligne ?
         inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
         Date outTime = new Date();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
