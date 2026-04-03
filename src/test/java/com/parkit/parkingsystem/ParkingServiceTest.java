@@ -134,4 +134,34 @@ public class ParkingServiceTest {
 
         assertNull(spot);
     }
+
+    @Test
+    public void testGetNextParkingNumberIfAvailableForBike() {
+        // Cover case 2
+        when(inputReaderUtil.readSelection()).thenReturn(2); // BIKE
+        when(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE)).thenReturn(1);
+
+        ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();
+
+        assertNotNull(spot);
+        assertEquals(1, spot.getId());
+        assertEquals(ParkingType.BIKE, spot.getParkingType());
+        assertTrue(spot.isAvailable());
+    }
+
+    @Test
+    public void testProcessIncomingVehicleNewUser() throws Exception {
+        // in case getNbTicket = 0, no welcoming message
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        when(ticketDAO.getNbTicket("ABCDEF")).thenReturn(0); // New user
+        when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+
+        parkingService.processIncomingVehicle();
+
+        verify(ticketDAO, times(1)).saveTicket(any(Ticket.class));
+        verify(ticketDAO, times(1)).getNbTicket("ABCDEF");
+        // No welcoming message →  if(getNbTicket > 0) is false
+    }
 }
